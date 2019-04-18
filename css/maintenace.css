@@ -1,0 +1,101 @@
+/* ––– GLOBAL –––*/
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    font-family: "Raleway", sans-serif;
+    line-height: 1.6;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+*+* {
+    margin-top: 1.5em;
+}
+
+::selection {
+    background-color: var(--red, red);
+    color: white;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #000000;
+}
+
+img {
+    border-radius: 5px;
+    width: 100%;
+    max-height: auto;
+    transition: width 1s ease-in;
+}
+
+/* –––––––––––––––––––––––––––––––––– */
+
+.container {
+    max-width: 1920px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.wrapper {
+    height: 90vh;
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    text-align: center;
+}
+
+.main-image {
+    width: 50%;
+    max-height: auto;
+}
+
+.header {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #F24C4E;
+}
+
+@media only screen and (max-width: 768px) {
+    .wrapper {
+        padding-top: 10%;
+    }
+
+    .main-image {
+        width: 90%;
+    }
+
+    .header {
+        padding-top: .5rem;
+        font-size: 2rem;
+    }
+}
+
+@media only screen and (min-width: 2559px) {
+    .header {
+        margin-top: 4rem;
+        font-size: 5rem;
+    }
+
+    .main-image {
+        width: 100%;
+    }
+}
