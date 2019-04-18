@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:form="http://www.w3.org/1999/html">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<title>Person List</title>
+          <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+          <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+          <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+        <a class="navbar-brand" th:href="@{/index}">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+
+        <br><br>
+
+            <div sec:authorize="hasRole('ROLE_ACCEPT')">
+                <form
+                            th:object="${app}" method="GET" >
+                        Nazwisko:
+                        <a th:text="*{userId.lastName}"/>
+                        <br/>
+                        Type:
+                        <a th:text="*{applicationType}"/>
+                        <br/>
+                        First Date:
+                        <a th:text="*{startDate}"/>
+                        <br/>
+                        Last date:
+                        <a th:text="*{lastDate}"/>
+                        <br/>
+                        Date submission:
+                        <a th:text="*{dateSubmission}"/>
+                        <br/>
+                        Active:
+                        <a th:text="*{active}"/>
+                        <br/>
+
+                     </form>
+                     <form th:action="@{/calendar/}+${app.application_Id}" th:method="POST">
+                         <input type="submit" th:value="Accept">
+                     </form>
+            </div>
+
+
+</body>
+</html>
