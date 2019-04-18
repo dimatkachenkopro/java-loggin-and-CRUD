@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <title>Sprzet List</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" th:href="@{/index}">Home <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+    </div>
+    <a class="navbar-brand" th:href="@{/infoPerson}">My profile</a>
+    <button th:align="right" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div align="center">
+    <h1>Sprzęt</h1>
+    <br/><br/>
+    <!--<form th:action="@{/add}" method="post">-->
+        <!--<div><label> Kategoria : <input type="text" name="kategoria"  required autofocus/> </label></div>-->
+        <!--<div><label> Nazwa Sprzętu: <input type="text" name="nazwasprzetu"  required autofocus/> </label></div>-->
+        <!--<div><label> Model: <input type="text" name="model"  required autofocus/> </label></div>-->
+        <!--<div><label> Przydział: <select name="przydzial">-->
+            <!--<option value="">Dostępny</option>-->
+            <!--<option th:each="user : ${usery}"-->
+                    <!--th:value="${user.lastName} +  ${user.firstName}"-->
+                    <!--th:utext="${user.lastName} + ${user.firstName}"/>-->
+        <!--</select> </label></div>-->
+        <!--<div><label> Status: <input type="text" name="status"  required autofocus/> </label></div>-->
+        <!--<div><label> Numer Seryjny: <input type="text" name="nrseryjny"  required autofocus/> </label></div>-->
+
+
+        <!--<div><input type="submit" value="Add"/></div>-->
+    <!--</form>-->
+
+    <a th:href="@{/addSprzet}">Add New Sprzęt</a>
+
+    <div>
+        <br/>
+        <table border="1" id="emp-table">
+            <thead>
+            <tr>
+                <th data-sort-prop="id">id</th>
+                <th data-sort-prop="kategoria">Kategoria</th>
+                <th data-sort-prop="nazwasprzetu">Nazwa Sprzętu</th>
+                <th data-sort-prop="model">Model</th>
+                <th data-sort-prop="przydzial">Przydział</th>
+                <th data-sort-prop="status">Status</th>
+                <th data-sort-prop="nrseryjny">Numer Seryjny</th>
+            </tr>
+            </thead>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><form th:action="@{/sort}"><select>
+                    <option value="">All</option>
+                    <option th:each="user : ${aa}"
+                            th:value="${user}"
+                            th:utext="${user}"/>
+                </select></form></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr th:each="equipment : ${sprzety}">
+                <td th:utext="${equipment.equipment_id}">...</td>
+               <td th:utext="${equipment.category}">...</td>
+                <td th:utext="${equipment.nameEquipment}">...</td>
+                <td th:utext="${equipment.model}">...</td>
+                <td th:utext="${equipment.possession}">...</td>
+                <td th:utext="${equipment.active}">...</td>
+                <td th:utext="${equipment.serialNumber}">...</td>
+               <<td><input type="button" th:onclick="'javascript:confirmDelete(' + ${equipment.equipment_id} + ');'" value="Delete"/>
+                </td>
+                <td><a th:href="@{/infoSprzet/}+${equipment.serialNumber}"><span>Edit</span></a></td>
+            </tr>
+        </table>
+        <!--<div class="pagination-div" th:with="sortParam=${sortProperty+','+(sortDesc?'desc':'asc')}">
+    <span th:if="${page.hasPrevious()}">
+        <a th:href="@{/equipment(page=${page.number-1},size=${page.size},sort=${sortParam})}">Previous</a>
+    </span>
+            <th:block th:each="i: ${#numbers.sequence(0, page.totalPages - 1)}">
+                <span th:if="${page.number == i}" class="selected">[[${i}+1]]</span>
+                <span th:unless="${page.number == i}">
+             <a th:href="@{/equipment(page=${i},size=${page.size},sort=${sortParam})}">[[${i}+1]]</a>
+        </span>
+            </th:block>
+            <span th:if="${page.hasNext()}">
+        <a th:href="@{/equipment(page=${page.number+1},size=${page.size},sort=${sortParam})}">Next</a>
+    </span>
+        </div>-->
+    </div>
+    <dialog id="favDialog">
+        <p>Confirm Delete?</p>
+        <form id="deleteForm" method="post" action="">
+            <input type="submit" id="submitBtn" value="Accept">
+            <input type="button" value="Cancel" onclick="cancel()">
+        </form>
+    </dialog>
+</div>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:form="http://www.w3.org/1999/html">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<title>Person List</title>
+          <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+          <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+          <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <style type="text/css">
+        .ui-datepicker td.red a{
+            color:#f00 !important;
+        }
+        .ui-datepicker td.green a{
+            color:#32CD32 !important;
+        }
+    </style>
+	<script th:inline="javascript">
+    $(function(){
+        $('#datepicker').datepicker({
+            numberOfMonths: [2, 3],
+            format: 'yyyy-mm-dd',
+            beforeShowDay:function(date){
+                /*<![CDATA[*/
+
+                    var user = /*[[${allDates}]]*/ 'allDates';
+
+                /*]]>*/
+
+                /*<![CDATA[*/
+
+                    var days = /*[[${allWeekendDays}]]*/ 'allWeekendDays';
+
+                /*]]>*/
+
+                var exist = $.grep(user, function(n,i) {
+                    var holidayDate = new Date(n.data);
+                    return holidayDate.getTime() === date.getTime();
+
+                })
+
+                var roots = days.map(function(x) {
+                    var aa = new Date(x);
+                    var str = $.datepicker.formatDate('yy-mm-dd', aa);
+                    return str;
+                });
+                var string = jQuery.datepicker.formatDate('yy-mm-dd', date);
+
+                if(date.toString().indexOf('Sun ')!=-1)
+                    return [1,'red'];
+                if(date.toString().indexOf('Sat ')!=-1)
+                    return [1,'red'];
+                if (exist.length)
+                    return [false, 'red'];
+                if(roots.indexOf(string) != -1 ){
+                   return [1,'green'];
+                }
+                else
+                    return [1];
+            }
+        })
+        $( "#wniosek" ).on( "click", function(){
+            var favDialog = document.getElementById('favDialog');
+            favDialog.showModal();
+        })
+    });
+    $( function() {
+        var from = $( "#startDate" )
+        .datepicker({
+            dateFormat: "yy-mm-dd",
+            changeMonth: true
+        })
+        .on( "change", function() {
+            to.datepicker( "option", "minDate", getDate(this) );
+        }),
+        to = $( "#lastDate" ).datepicker({
+            dateFormat: "yy-mm-dd",
+            changeMonth: true
+        })
+        .on( "change", function() {
+            from.datepicker( "option", "maxDate", getDate(this) );
+        });
+
+        function getDate( element ) {
+            var date;
+            var dateFormat = "yy-mm-dd";
+            try {
+                date = $.datepicker.parseDate( dateFormat, element.value );
+            } catch( error ) {
+                date = null;
+            }
+            return date;
+        }
+
+        $( "#submit" ).on( "click", function() {
+            var firstDate = getDate(document.getElementById('startDate'));
+            var lastDate = getDate(document.getElementById('lastDate'));
+            //var type = $("#type").val();
+            var listaUserow = document.getElementById("userr");
+            var strUser = listaUserow.options[listaUserow.selectedIndex].value;
+            var e = document.getElementById("type");
+            var strType = e.options[e.selectedIndex].value;
+            $.ajax({
+                url: '/application/' + firstDate + '/' + lastDate + '/' + strType + '/' + strUser,
+                type: 'GET',
+            });
+        });
+        $("#decline" ).on("click", function() {
+            var favDialog = document.getElementById('favDialog');
+            favDialog.close();
+        });
+    });
+	</script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+        <a class="navbar-brand" th:href="@{/index}">Home</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div sec:authorize="hasRole('ROLE_ADMIN')">
+            <a class="navbar-brand" th:href="@{/addHoliday}">Add Holiday</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+        <div id="datepicker"></div>
+        <input type="button" id="wniosek" value="Zrób wniosek"/>
+        <br><br>
+        <div sec:authorize="hasRole('ROLE_USER')">
+        <h2>Accept</h2>
+        <table border="2">
+            <tr>
+                <th>Typ</th>
+                <th>Data Od</th>
+                <th>Data Do</th>
+                <th>Data Zlozenia</th>
+                <th>Status</th>
+            </tr>
+            <tr th:each ="app : ${allUserApp}" th:if="${app.active == true}">
+                <td th:utext="${app.applicationType}">...</td>
+                <!--<div th:if="${user.getId() == }">-->
+                <td th:utext="${app.startDate}">...</td>
+                <td th:utext="${app.lastDate}">...</td>
+                <td th:utext="${app.dateSubmission}">...</td>
+                <td th:utext="${app.active}">...</td>
+            </tr>
+        </table>
+        </div>
+        <div sec:authorize="hasRole('ROLE_USER')">
+            <h2>Decline</h2>
+            <table border="2">
+                <tr>
+                    <th>Typ</th>
+                    <th>Data Od</th>
+                    <th>Data Do</th>
+                    <th>Data Zlozenia</th>
+                    <th>Status</th>
+                </tr>
+                <tr th:each ="app : ${allUserApp}" th:if="${app.active == false}">
+                    <td th:utext="${app.applicationType}">...</td>
+                    <!--<div th:if="${user.getId() == }">-->
+                    <td th:utext="${app.startDate}">...</td>
+                    <td th:utext="${app.lastDate}">...</td>
+                    <td th:utext="${app.dateSubmission}">...</td>
+                    <td th:utext="${app.active}">...</td>
+                </tr>
+            </table>
+        </div>
+
+            <div sec:authorize="hasRole('ROLE_ACCEPT')">
+                <table border="2">
+                    <tr>
+                        <th>Osoba</th>
+                        <th>Typ</th>
+                        <th>Data Od</th>
+                        <th>Data Do</th>
+                        <th>Data Zlozenia</th>
+                        <th>Status</th>
+                    </tr>
+                    <tr th:each ="app : ${applicationsDate}">
+                        <td th:utext="${app.userId.lastName}">...</td>
+                        <td th:utext="${app.applicationType}">...</td>
+                        <td th:utext="${app.startDate}">...</td>
+                        <td th:utext="${app.lastDate}">...</td>
+                        <td th:utext="${app.dateSubmission}">...</td>
+                        <td th:utext="${app.active}">...</td>
+                        <form th:action="@{/calendar/}+${app.application_Id}" th:method="POST">
+                        <td><input type="submit" value="Accept"/></td>
+                        </form>
+                    </tr>
+                </table>
+            </div>
+
+        <dialog id="favDialog">
+        <p>Wniosek</p>
+            <form>
+                <select id="type">
+                    <option value="Urlop">Urlop</option>
+                    <option value="Dni wolne">Dni wolne</option>
+                </select>
+                <!--<input type="text" name="osoba" value="Osoba Zastepujaca" >-->
+                <p>Date:</p> <div name="startDate" id="startDate"></div> TO <div name="lastDate" id="lastDate"></div>
+                <p>Osoba zastepujaca</p>
+                <select id="userr">
+                    <option value=""> --</option>
+                    <option  th:each="user : ${allUsers}"
+                                              th:text="${user.lastName}"></option>
+                </select>
+                <br>
+                <br>
+                <input id="submit" type="submit" value="Accept"/>
+                <input id="decline" type="button" value="Decline"/>
+            </form>
+        </dialog>
+</body>
+</html>
