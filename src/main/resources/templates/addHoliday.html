@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:form="http://www.w3.org/1999/html">
+<head>
+	<meta charset="utf-8">
+	<title>Person List</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+	<script type="text/javascript">
+$(function() {
+  var from = $( "#fromDate" )
+        .datepicker({
+            dateFormat: "yy-mm-dd",
+            changeMonth: false
+        })
+        .on( "change", function() {
+            to.datepicker( "option", "minDate", getDate(this) );
+        }),
+        to = $( "#toDate" ).datepicker({
+            dateFormat: "yy-mm-dd",
+            changeMonth: false
+        })
+        .on( "change", function() {
+            from.datepicker( "option", "maxDate", getDate(this) );
+        }),
+        holiday = $("#holiday").datepicker({
+            dateFormat: "yy-mm-dd",
+            changeMonth: false
+        })
+        .on( "change", function() {
+            holiday.datepicker( "option", getDate(this) );
+        });
+
+  function getDate( element ) {
+    var date;
+    var dateFormat = "yy-mm-dd";
+    try {
+        date = $.datepicker.parseDate( dateFormat, element.value );
+    } catch( error ) {
+        date = null;
+    }
+      return date;
+  }
+
+  $( "#submit" ).on( "click", function() {
+    var a = getDate(document.getElementById('holiday'));
+    var b = $("#nameOfH").val();
+    $.ajax({
+        url: '/addHoliday/' + b + '/' + a,
+        type: 'GET',
+    });
+           //$("#deleteForm").val(idToDelete);
+                       //$('#deleteForm').attr('action', '/delete/'+idToDelete);
+  });
+});
+</script>
+
+</head>
+<body>
+    <a class="navbar-brand" th:href="@{/calendar}">Calendar</a>
+    <h1> Add holiday</h1>
+    <form>
+        Holiday Name:
+        <input type="text" id="nameOfH"/>
+        <br/>
+        Date
+        <input type="text" id="holiday" name="date">
+        <br/>
+        <input type="submit" id="submit" value="Accept"/>
+    </form>
+</body>
+</html>

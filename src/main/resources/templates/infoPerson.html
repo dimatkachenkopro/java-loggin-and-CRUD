@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <title>Info</title>
+
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" th:href="@{/personLis}">Back</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" th:href="@{/index}">Home <span class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div sec:authorize="hasRole('ROLE_USER')">
+    <form
+            th:object="${person}" method="GET" th:action="@{/updatePerson/}+${person.id}">
+        <input hidden="false" type="text" th:field="*{id}"/>
+        Imie:
+        <a th:text="*{firstName}"></a>
+        <!--<input type="text" th:field="*{firstName}"/>-->
+        <br/>
+        Nazwisko:
+        <a th:text="*{lastName}"/>
+        <br/>
+        Stanowisko:
+        <a th:text="*{position}"/>
+        <br/>
+        Numer telefonu:
+        <a th:text="*{phoneNumber}"/>
+        <br/>
+        Email:
+        <a th:text="*{email}"/>
+        <br/>
+        Miejsce pracy:
+        <a th:text="*{workplace}"/>
+        <br/>
+        <table border="1" id="emp-table">
+            <thead>
+            <tr>
+                <th data-sort-prop="id">id</th>
+                <th data-sort-prop="kategoria">Kategoria</th>
+                <th data-sort-prop="nazwasprzetu">Nazwa Sprzętu</th>
+                <th data-sort-prop="model">Model</th>
+                <th data-sort-prop="status">Status</th>
+                <th data-sort-prop="nrseryjny">Numer Seryjny</th>
+            </tr>
+            </thead>
+            <tr th:each="equipment : ${sprets}">
+
+                <td th:utext="${equipment.category}">...</td>
+                <td th:utext="${equipment.nameEquipment}">...</td>
+                <td th:utext="${equipment.model}">...</td>
+                <td th:utext="${equipment.active}">...</td>
+                <td th:utext="${equipment.serialNumber}">...</td>
+            </tr>
+        </table>
+        <!--<input type="submit" value="Update"/>-->
+
+    </form>
+</div>
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+    <form
+            th:object="${person}" method="GET" th:action="@{/updatePerson/}+${person.id}">
+        <input hidden="false" type="text" th:field="*{id}"/>
+        Imie:
+        <input type="text" th:field="*{firstName}"/>
+        <br/>
+        Nazwisko:
+        <input type="text" th:field="*{lastName}"/>
+        <br/>
+        Stanowisko:
+        <select th:field="*{position}">
+            <option value=""> --</option>
+            <option th:each="user : ${allUsers}"
+                    th:value="${user}"
+                    th:utext="${user}"/>
+        </select>
+        <input type="submit" value="Update"/>
+        <!--<input type="text" th:field="*{stanowisko}"/>-->
+        <br/>
+        Numer telefonu:
+        <input type="number" th:field="*{phoneNumber}"/>
+        <br/>
+        Email:
+        <input type="text" th:field="*{email}"/>
+        <br/>
+        Miejsce pracy:
+        <input type="text" th:field="*{workplace}"/>
+        <br/>
+        <input type="submit" value="Update"/>
+    </form>
+</div>
+<!--
+<div class="form-group label-floating">
+    <label>Username</label>
+    <input type="text" name="username"
+    th:value="${currentUser.username}"/>
+</div>-->
+
+
+
+
+</body>
+</html>
